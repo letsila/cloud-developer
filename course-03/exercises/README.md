@@ -102,12 +102,12 @@ kops create cluster \
 Next step is to create the different services using kops. 
 Note that it is important to create the services before the deployment. From within [udacity-c3-deployment/k8s](/udacity-c3-deployment/k8s) run
 ```bash
-kubectl create -f backend-user-service.yaml
-kubectl create -f backend-feed-service.yaml
+kops create -f backend-user-service.yaml
+kops create -f backend-feed-service.yaml
 ```
 Then run the reverseproxy deployment
 ```bash
-kubectl create -f reverseproxy-deployment.yaml
+kops create -f reverseproxy-deployment.yaml
 ```
 Finally check that the pods are running as expected using
 ```bash
@@ -115,8 +115,8 @@ kubectl get pod
 ```
 
 ### Docker images links on Dockerhub
-https://hub.docker.com/repository/docker/letsila/reverseproxy
-https://hub.docker.com/repository/docker/letsila/udacity-front-end
-https://hub.docker.com/repository/docker/letsila/udacity-restapi-feed
-https://hub.docker.com/repository/docker/letsila/udacity-restapi-user
+* https://hub.docker.com/repository/docker/letsila/reverseproxy
+* https://hub.docker.com/repository/docker/letsila/udacity-front-end
+* https://hub.docker.com/repository/docker/letsila/udacity-restapi-feed
+* https://hub.docker.com/repository/docker/letsila/udacity-restapi-user
 
