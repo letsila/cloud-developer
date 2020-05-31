@@ -114,6 +114,9 @@ Finally check that the pods are running as expected using
 kubectl get pod
 ```
 
-
-
+### Docker images links on Dockerhub
+https://hub.docker.com/repository/docker/letsila/reverseproxy
+https://hub.docker.com/repository/docker/letsila/udacity-front-end
+https://hub.docker.com/repository/docker/letsila/udacity-restapi-feed
+https://hub.docker.com/repository/docker/letsila/udacity-restapi-user
 
