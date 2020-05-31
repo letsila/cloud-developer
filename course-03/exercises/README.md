@@ -51,3 +51,69 @@ Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These fi
 ionic build
 ```
 ***
+
+## Deployment using Kops
+[udacity-c3-deployment](/udacity-c3-deployment) contains the necessary files used for the deployment. There's two repositories inside: 
+* /docker: contains the docker-compose configurations for creating the reverseproxy container and the build specifications
+* /k8s: contains all the kubernetes yaml used for deploying the pods and and the services
+
+### Docker
+The first step is to build the docker images needed by our services. Each services has their own Dockerfile. Each services are linked using the nginx reverseproxy. 
+
+#### Configure AWS credentials
+Before building our services images we need to define all AWS credentials as ENV variables. These credentials can be written into the file `~/.profile`as the following
+```bash
+export POSTGRESS_USERNAME= "<YOU_OWN_CONFIG_HERE>"
+export POSTGRESS_PASSWORD= "<YOU_OWN_CONFIG_HERE>"
+export POSTGRESS_DB= "<YOU_OWN_CONFIG_HERE>"
+export POSTGRESS_HOST= "<YOU_OWN_CONFIG_HERE>"
+export AWS_REGION= "<YOU_OWN_CONFIG_HERE>"
+export AWS_PROFILE=default;
+export AWS_BUCKET= "<YOU_OWN_CONFIG_HERE>"
+export JWT_SECRET= "<YOU_OWN_CONFIG_HERE>"
+```
+Additionaly you'd want to export `AWS_ACCESS_KEY_ID`, `AWS_ACCESS_SECRET_KEY` and `AWS_SESSION_TOKEN` to get cli access to the different AWS ressources associated to your account.
+
+#### Build services images using docker-compose
+A convenient way to build the services images at once is to use docker-compose from within the [/udacity-c3-deployment/docker](/udacity-c3-deployment/docker) directory
+```bash
+docker-compose -f docker-compose-build.yaml build --parallel
+```
+Then deploy the image to the dockerhub registry
+```bash
+docker push <YOUR_DOCKER_HUB_ID>/reverseproxy
+```
+
+#### Create the kubernetes cluster using Kops
+We assume that you have `kubectl` and [Kops](https://github.com/kubernetes/kops) installed. Also ensure that you have a public s3 bucket available on AWS. The bucket would allow us to save the state of our deployments. Additionally we'd use the `k8s.local` suffix for our cluster name to avoid setting up a real domain name for our cluster. A cluster will be created with a load-balancer pointing to our masters. Here's the command for creating the cluster:
+```bash
+kops create cluster \
+       --state "s3://<YOUR_S3_BUCKET_NAME>" \
+       --zones "us-east-1"  \
+       --master-count 3 \
+       --master-size=t2.micro \
+       --node-count 2 \
+       --node-size=t2.micro \
+       --name our_cluset.k8s.local \
+       --yes
+```
+
+#### Create the services in kubernetes
+Next step is to create the different services using kops. 
+Note that it is important to create the services before the deployment. From within [udacity-c3-deployment/k8s](/udacity-c3-deployment/k8s) run
+```bash
+kubectl create -f backend-user-service.yaml
+kubectl create -f backend-feed-service.yaml
+```
+Then run the reverseproxy deployment
+```bash
+kubectl create -f reverseproxy-deployment.yaml
+```
+Finally check that the pods are running as expected using
+```bash
+kubectl get pod
+```
+
+
+
+
