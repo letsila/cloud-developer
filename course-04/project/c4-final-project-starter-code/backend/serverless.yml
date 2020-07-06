@@ -34,7 +34,7 @@ provider:
       models:
         - name: TodoRequest
           contentType: application/json
-          schema: ${file(models/create-todo-request.json)}
+          schema: ${file(src/models/create-todo-request.json)}
 
 functions:
 
@@ -70,6 +70,12 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new todo
+            description: Create a new todo
+            requestModels:
+              'application/json': TodoRequest
 
   # # TODO: Configure this function
   UpdateTodo:
