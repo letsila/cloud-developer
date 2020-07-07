@@ -1,2 +1,2 @@
-# cloud-developer
-content for Udacity's cloud developer nanodegree
+FOR THE REVIEWER:
+Please refer to the dev branch of course-04 for the serverless final project.
