@@ -3,11 +3,19 @@ import * as uuid from 'uuid'
 import { TodoItem } from '../models/TodoItem'
 import { TodosAccess } from '../dataLayer/todosAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import { parseUserId } from '../auth/utils'
 
 const todosAccess = new TodosAccess()
 
-export async function deleteTodo(todoId: string): Promise<void>{
+export async function updateTodo(
+  updatedTodoRequest: UpdateTodoRequest,
+  todoId: string
+): Promise<void> {
+  return todosAccess.updateTodo(todoId, updatedTodoRequest)
+}
+
+export async function deleteTodo(todoId: string): Promise<void> {
   return todosAccess.deleteTodo(todoId)
 }
 
